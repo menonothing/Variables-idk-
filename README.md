@@ -3,3 +3,4 @@ along with that, i suspect their time and space complexity would be abysmal comp
 
 I aim to make computer- recognise variable, some commonly used functions and exponents, and simplify equations 
 pseudo code has been made and recorded as comments in code itself, i'd say around 60-70% or the work is done, will update this line once I finish this code
+ps- the file name absolutely doesn't and won't make sense dont waste your time thinking about it
