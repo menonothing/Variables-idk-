@@ -1,11 +1,12 @@
 #do proper algebra and sorting
 
 #get input of equation and variable currently single variable
-print("enclose functions in brackets, (sinx) and not sinx, so as to not confuse computer between genuine variables(s,i,n,x) and functions")
-print("x(sinx) and not xsinx")
+print("enclose functions in brackets, (sinx) and not sinx, so as to not confuse computer between genuine variables(s,i,n,x) and functions\n"+"x(sinx) and not xsinx")
 print("(sinx**2) for sin of (x raised to power two) and not sin of x, sin squared=> (sinx)**2")
 print("(x**2sinx) for x raised to power 2 sinx, and not (x**2)sinx which means x raised to power 2 multiplied by sinx, please be concise so as to not get wrong results")
-fx= input("enter equation  ")
+print("negative exponent term(base or exponent whichever is -ve) should be in bracket")
+fx=input("enter equation  ")
+
 Fx=[]
 recognisedfuctions=["sin","cos","tan","cot","sec","cosec","log"]
 
@@ -43,6 +44,8 @@ for i in fx:
                        if j==" ":
                              Fx.append(bracket)      
                              break
+                       elif fx.index(j)==len(fx)-1:
+                             Fx.append(bracket)
                        bracket=bracket+j
                        h=h+1    
             except IndexError:
@@ -66,44 +69,47 @@ for i in fx:
                         c=c+1
                         isfunction=isfunction+"("  
                     elif j==")":
-                        
-                         c=c-1
-                         isfunction=isfunction+j
-                         if c==0:
-                              Fx.append(isfunction)
-                              break
-                    elif j==" " and c==0:
-                         Fx.append(isfunction)
-                         
-                         break
-                    elif c==0:
-                        if j=="+" or j=="-":
-                             Fx.append(isfunction)    
-                             h-=1
-                             break
-                    else:
+                        c=c-1
                         isfunction=isfunction+j
-                           
+                        if c==0:
+                            isfunction=isfunction+")" 
+                            Fx.append(isfunction)
+                            break
+                    elif j==" " and c==0:
+                        if j!=index+3:
+                             isfunction=isfunction+")"
+                             Fx.append(isfunction)
+                             break
+                    elif c==0 and j in ("+","-") and fx[fx.index(j)+1]==" ":
+                        if fx.index(j)==index+3:
+                            isfunction=isfunction+"("
+                        isfunction=isfunction+")"
+                        Fx.append(isfunction)    
+                        h-=1
+                        break
+                    else:
+                        isfunction=isfunction+"("+j                   
         except IndexError:
+            Fx.append(i)
             continue
+
 
 #to get list of expression=[term,term,term,term,[sign,number,function,function,function] 
 c=0
-f=[]
+f=""
 terms=[]
 if Fx[0].isalnum():
-    Fx.insert(0,"+")
+    f=f+"+"
 Fx.append("+")#to get the last term to register in terms, as +/- is the indicator for end of term and trigger to dump value
-f.append(Fx[0])
-for i in Fx[1:len(Fx)]:
+
+for i in Fx[0:len(Fx)]:
     if i=="+" or i=="-":        
-        terms.append(f.copy())        
-        f.clear()
-        f.append(i)
+        terms.append(f)        
+        f=""
+        f=f+i
     else:
-        f.append(i)
-del(f)
-del(Fx)#to save space ig
+        f=f+i
+
 
 #[[+,3,4,sinx],[-,9,7,(67+97)]] current scenario, modify downwards to unify functions, [3,4]=>[34]
 #convert symbol and numbers at first positions to int along with joing ex-3,4=>34
@@ -123,6 +129,8 @@ def is_brac_or_exponent(listElement):
     #compare index of both to find which one to call using if statement
     #call respective exponents or brackets functions
     #if no bracket and exponent left=> x=False
+    # if exponent returns 0 then exponent is no number and hence can't be calculated
+    #if exponent returns 1, then exponent power=0 ignore the bracket, substitute one and move on
     return(None)
 
 def brackets(list_of_terms_elementTerm,index_of_bracket, index_of_term):
@@ -135,13 +143,43 @@ def brackets(list_of_terms_elementTerm,index_of_bracket, index_of_term):
     #pop list_of_terms_elementTerm
     return(None)
 
-def exponents(list_of_terms_elementTerm,index_of_exponent,index_of_term):
-    #just pop out whole number exponents=exponent and pop out** too
-    #something flag like if non whole number exponents so that you can use it later if you decide for graph to solve and find similarities 
-    #LISTexpo copies the thing, then pop list from terms list
-    #i=0
-    #while exponent>0:  exponent-=1  terms.insert(index_of_term+i,LISTexpo)  i+=1
-    return(None)
+negativeEXPO=[]
+def exponents(list_of_terms_elementTerm,index_of_term):
+    index_of_term=int(index_of_term)
+    Exponent=""
+    Base=""
+    Bruh=""
+    Index=-1
+    for i in list_of_terms_elementTerm[-1:-len(list_of_terms_elementTerm):-1]:
+
+        Index=Index-1
+        if i=="*" and list_of_terms_elementTerm(Index)=="*":
+            Exponent=Exponent+Bruh[-1:-len(Bruh)-1:-1]
+            Bruh=""
+            continue
+        Bruh= Bruh+i
+    Base=Bruh[-1:-len(Bruh):-1]
+
+    try:
+        Exponent=int(Exponent)
+    except TypeError:
+        return(0)#not a number as base, can't open bracket
+    
+    terms.pop(index_of_term)
+    if Exponent<0:
+       negativeEXPO.append(index_of_term)
+    Case=abs(Exponent)
+    Bruh=""
+    while Case>0:
+        Bruh=Bruh+"   "+Base
+        Case-=1        
+    if len(Bruh)>0:
+        return(Bruh)#Bruh has a string of base repeated with 3space in between
+    else:
+        return(str(+1))
+
+
+#fuck around and find out a way to skip exponents of such and go to bracket step directly return(None)
     
 #before sorting, simplify expressions into smallest possible, ie def bracket and def exponents;;;;   sort function
 #since terms are sorted and symbilified, act of adding common terms is simplified
